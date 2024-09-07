@@ -39,15 +39,15 @@
       dest: /app
       remote_src: yes
 
-  # - name: install dependencies 
-  #   ansible.builtin.command: npm install
-  #   args:
-  #     chdir: /app
+  - name: install dependencies 
+    ansible.builtin.command: npm install  # here it means we're installing the dependency in package.json in nodejs loaction.thats y we 'have to change the dir where the package.json is  present.in our case its in app directory.
+    args:
+      chdir: /app
 
-  # - name: copy backend service
-  #   ansible.builtin.copy:
-  #     src: backend.service
-  #     dest: /etc/systemd/system/backend.service
+  - name: copy backend service  
+    ansible.builtin.copy:       
+      src: backend.service
+      dest: /etc/systemd/system/backend.service
 
   # - name: ansible to install pymysql
   #   ansible.builtin.pip:
@@ -56,14 +56,17 @@
   #     - cryptography
   #     executable: pip3.9
 
-  # - name: import mysql data
-  #   community.mysql.mysql_db:
-  #     login_user: root
-  #     login_password: "{{ mysql_root_password }}"
-  #     login_host: "{{ login_host }}"
-  #     target: /app/schema/backend.sql
-  #     name: all
-  #     state: import
+#if we run other cmnds in expense doc  backend. it will throw errr since we didn't import the data in the schema to mysqldb. so before running,try to import data to mysqldb by/cnnecting to mysql server.with the below task/cmnd.reffer the expense doc .
+ # thatss y we're writing the below task to avoid error.
+
+  - name: import mysql data
+    community.mysql.mysql_db:           
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      login_host: "{{ login_host }}"
+      target: /app/schema/backend.sql
+      name: all
+      state: dump
 
   # - name: daemon reload
   #   ansible.builtin.systemd_service:
